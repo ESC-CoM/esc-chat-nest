@@ -18,7 +18,7 @@ export abstract class BaseRepository<TDocument extends BaseSchema> {
   ) {}
 
   async create(
-    document: Omit<TDocument, '_id'>,
+    document: Partial<TDocument>,
     options?: SaveOptions,
   ): Promise<TDocument> {
     const createdDocument = new this.model({
@@ -69,7 +69,9 @@ export abstract class BaseRepository<TDocument extends BaseSchema> {
   }
 
   async find(filterQuery: FilterQuery<TDocument>) {
-    return this.model.find(filterQuery, {}, { lean: true });
+    return this.model
+      .find(filterQuery, {}, { lean: true })
+      .sort({ createdAt: 1 });
   }
 
   async startTransaction() {

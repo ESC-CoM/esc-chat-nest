@@ -85,11 +85,12 @@ export class ChatDto {
   room: Pick<RoomDto, 'id'>;
   sender: Pick<User, 'id'>;
   content: Message;
-
+  createdAt: number;
   constructor(chat: Chat) {
     this.id = chat._id.toString();
     this.room = { id: chat.room.toString() };
     this.sender = { id: chat.sender.toString() };
     this.content = chat.content;
+    this.createdAt = Math.floor(chat.createdAt.getTime() / 1000);
   }
 }

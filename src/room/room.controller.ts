@@ -9,7 +9,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
-import { MeetingDto, RoomDto } from './dto';
+import { ChatDto, MeetingDto, RoomDto } from './dto';
 
 @Controller('/api/v1/chat-rooms')
 export class RoomController {
@@ -51,6 +51,6 @@ export class RoomController {
   @Get(':id/chats')
   public async searchChats(@Param('id') roomId) {
     const chats = await this.service.searchChat(roomId);
-    return chats;
+    return chats.map((chat) => new ChatDto(chat));
   }
 }

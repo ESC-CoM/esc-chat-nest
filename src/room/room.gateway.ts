@@ -1,21 +1,12 @@
 import {
   ConnectedSocket,
-  MessageBody,
-  OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsException,
-  WsResponse,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import * as console from 'console';
-import { UseFilters, UseGuards } from '@nestjs/common';
-import { WsExceptionFilter } from '../socket/socket.filter';
 import { CustomJwtService } from '../jwt/custom-jwt.service';
-import { async } from 'rxjs';
-import { JwtAuthGuard } from '../jwt/jwt.guard';
 
 @WebSocketGateway({ namespace: '/chat-rooms' })
 export class RoomGateway implements OnGatewayDisconnect {

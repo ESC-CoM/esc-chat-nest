@@ -1,18 +1,16 @@
 import { Module } from '@nestjs/common';
-import { RoomService } from './room.service';
-import { RoomController } from './room.controller';
-import { ChatRoomRepository } from './room.repository';
-import { MeetingService } from './meeting/meeting.service';
+import { UserModule } from '../user/user.module';
+import { ChatModule } from '../chat/chat.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ChatRoom, ChatRoomSchema } from './entity/room.schema';
+import { JwtModule } from '@nestjs/jwt';
+import { RoomService } from './room.service';
+import { ChatRoomRepository } from './room.repository';
+import { MeetingService } from './meeting/meeting.service';
 import { RoomGateway } from './room.gateway';
 import { CustomJwtService } from '../jwt/custom-jwt.service';
-import { JwtAuthGuard } from '../jwt/jwt.guard';
-import { JwtModule } from '@nestjs/jwt';
-import { UserModule } from '../user/user.module';
 import { DetailGateway } from './detail/detail.gateway';
-import { ChatModule } from '../chat/chat.module';
-import * as process from 'process';
+import { RoomController } from './room.controller';
 
 @Module({
   imports: [

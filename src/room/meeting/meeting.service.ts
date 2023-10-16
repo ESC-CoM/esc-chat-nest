@@ -1,6 +1,5 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { Meeting } from '../dto';
-import * as process from 'process';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Meeting } from '../entity/room.schema';
 
 @Injectable()
 export class MeetingService {

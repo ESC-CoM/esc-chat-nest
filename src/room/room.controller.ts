@@ -9,7 +9,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
-import { ChatDto, MeetingDto, RoomDto } from './dto';
+import { RoomDetailDto, RoomDto } from './dto/room.dto';
+import { ApiBody, ApiResponse, OmitType } from '@nestjs/swagger';
+import { ChatDto } from './dto/chat.dto';
+import { Message } from '../chat/schema/chat.schema';
+import { find } from 'rxjs';
+import { request } from 'express';
 
 @Controller('/api/v1/chat-rooms')
 export class RoomController {
@@ -22,6 +27,9 @@ export class RoomController {
   }
 
   @Get('/me')
+  @ApiResponse({
+    type: [RoomDto],
+  })
   public async find(@Req() request: Request & { user: { id: string } }) {
     const results = await this.service.search(request.user.id);
     return results.map((result) => {
@@ -30,6 +38,7 @@ export class RoomController {
   }
 
   @Get(':id')
+  @ApiResponse({ type: OmitType(RoomDto, ['unreadItemCount'] as const) })
   public async findDetail(
     @Param('id') roomId: string,
     @Req() request: Request & { user: { id: string } },
@@ -40,6 +49,7 @@ export class RoomController {
   }
 
   @Post(':id/chats')
+  @ApiBody({ type: Message })
   public async sendMessage(
     @Req() request: Request & { user: { id: string } },
     @Param('id') roomId: string,
@@ -59,7 +69,8 @@ export class RoomController {
   }
 
   @Get(':id/chats')
-  public async searchChats(@Param('id') roomId) {
+  @ApiResponse({ type: [ChatDto] })
+  public async searchChats(@Param('id') roomId: string) {
     const chats = await this.service.searchChat(roomId);
     return chats.map((chat) => new ChatDto(chat));
   }

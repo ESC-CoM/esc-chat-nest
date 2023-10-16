@@ -6,8 +6,8 @@ import { RoomGateway } from './room.gateway';
 import { ChatService } from '../chat/chat.service';
 import { FlattenMaps, Types } from 'mongoose';
 import { DetailGateway } from './detail/detail.gateway';
-import { Meeting } from './dto';
 import { User } from '../user/schema/user.schema';
+import { Meeting } from './entity/room.schema';
 
 @Injectable()
 export class RoomService {

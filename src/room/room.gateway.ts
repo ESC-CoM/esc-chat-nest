@@ -32,8 +32,6 @@ export class RoomGateway implements OnGatewayDisconnect {
     const user = await this.jwtService.verify(
       client.handshake.headers.authorization,
     );
-    console.log(client.rooms);
     client.leave(user.id);
-    console.log(client.rooms);
   }
 }

@@ -13,7 +13,6 @@ export class CustomJwtService {
     try {
       return await this.jwtService.verify(token);
     } catch (error) {
-      console.log(error);
       throw new UnauthorizedException({
         code: 'LOGIN_REQUIRED',
         message: '로그인이 필요합니다.',

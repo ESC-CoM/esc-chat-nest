@@ -27,7 +27,6 @@ export class MeetingService {
         method: 'GET',
       },
     ).then((result) => result.json());
-    console.log(result);
     return result;
   }
 }

@@ -70,6 +70,11 @@ export class RoomService {
       sender: sender._id,
     });
     const users = await this.userService.findByRoomId(room._id);
+    room.lastChat = createdChat;
+    await this.repository.findOneAndUpdate(
+      { _id: room._id },
+      { $set: { lastChat: createdChat } },
+    );
     this.detailGateway.io.in(chat.roomId).emit('chat-append', createdChat);
     this.roomGateway.io
       .in(users.map((user) => user.id))

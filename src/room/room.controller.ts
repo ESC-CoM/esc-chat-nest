@@ -25,8 +25,18 @@ export class RoomController {
   public async find(@Req() request: Request & { user: { id: string } }) {
     const results = await this.service.search(request.user.id);
     return results.map((result) => {
-      return new RoomDto(result.room, result.unreadItemCount, request.user.id);
+      return new RoomDto(result.room, request.user.id, result.unreadItemCount);
     });
+  }
+
+  @Get(':id')
+  public async findDetail(
+    @Param('id') roomId: string,
+    @Req() request: Request & { user: { id: string } },
+  ) {
+    const chatRoom = await this.service.findDetail(roomId);
+    console.log(chatRoom);
+    return new RoomDto(chatRoom, request.user.id);
   }
 
   @Post(':id/chats')

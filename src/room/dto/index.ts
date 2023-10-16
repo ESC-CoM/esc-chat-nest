@@ -31,6 +31,7 @@ export class Participant {
     isCertificated: boolean;
     major: Major;
   };
+  lastAccessedAt?: number;
 }
 export class Major {
   id: number;
@@ -73,9 +74,9 @@ export class RoomDto {
   id: string;
   meeting: MeetingDto;
   createdAt: number;
-  lastChat: ChatDto;
-  unreadItemCount: number;
-  constructor(room: ChatRoom, unreadItemCount: number, myId: string) {
+  lastChat?: ChatDto;
+  unreadItemCount?: number;
+  constructor(room: ChatRoom, myId: string, unreadItemCount?: number) {
     this.id = room._id.toString();
     this.meeting = new MeetingDto(room.meeting, myId);
     this.createdAt = Math.floor(room.createdAt.getTime() / 1000);

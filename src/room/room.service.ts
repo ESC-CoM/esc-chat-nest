@@ -4,8 +4,10 @@ import { MeetingService } from './meeting/meeting.service';
 import { UserService } from '../user/user.service';
 import { RoomGateway } from './room.gateway';
 import { ChatService } from '../chat/chat.service';
-import { Types } from 'mongoose';
+import { FlattenMaps, Types } from 'mongoose';
 import { DetailGateway } from './detail/detail.gateway';
+import { Meeting } from './dto';
+import { User } from '../user/schema/user.schema';
 
 @Injectable()
 export class RoomService {
@@ -18,12 +20,42 @@ export class RoomService {
     private detailGateway: DetailGateway,
   ) {}
 
-  public async create(meetingId: string) {
-    const meeting = await this.meetingService.find(meetingId);
-    const chatRoom = await this.repository.upsert(
-      { 'meeting.id': meeting.id },
-      { meeting },
+  public async findDetail(roomId: string) {
+    const room = await this.repository.findOne({
+      _id: new Types.ObjectId(roomId),
+    });
+    const meeting = await this.meetingService.find(room.meeting.id);
+    const participantIds = this.getParticipantIds(meeting);
+    const accessedTimeWithUser = await this.userService.getAccessedTimeWithUser(
+      roomId,
+      participantIds,
     );
+    meeting.ownerTeam.participants.forEach(
+      (participant) =>
+        (participant.lastAccessedAt = this.getLastAccessedAt(
+          accessedTimeWithUser,
+          participant.id,
+        )),
+    );
+    meeting.engagedTeam?.participants.forEach(
+      (participant) =>
+        (participant.lastAccessedAt = this.getLastAccessedAt(
+          accessedTimeWithUser,
+          participant.id,
+        )),
+    );
+    return { ...room, meeting };
+  }
+
+  private getLastAccessedAt(target: FlattenMaps<User>[], userId: string) {
+    return Math.floor(
+      target
+        .find((user) => user.id === userId)
+        ?.rooms[0]?.lastAccessedAt.getTime() / 1000,
+    );
+  }
+
+  private getParticipantIds(meeting: Meeting) {
     const ownerTeamParticipantIds = meeting.ownerTeam.participants.map(
       (participant) => participant.id,
     );
@@ -33,9 +65,18 @@ export class RoomService {
     if (engagedTeamParticipantIds) {
       ownerTeamParticipantIds.push(...engagedTeamParticipantIds);
     }
-    await this.userService.addRoom(chatRoom, ownerTeamParticipantIds);
+    return ownerTeamParticipantIds;
+  }
+  public async create(meetingId: string) {
+    const meeting = await this.meetingService.find(meetingId);
+    const chatRoom = await this.repository.upsert(
+      { 'meeting.id': meeting.id },
+      { meeting },
+    );
+    const participantIds = this.getParticipantIds(meeting);
+    await this.userService.addRoom(chatRoom, participantIds);
     this.roomGateway.io
-      .in(ownerTeamParticipantIds)
+      .in(participantIds)
       .emit('room-append', { ...chatRoom, id: chatRoom._id, meeting });
   }
 

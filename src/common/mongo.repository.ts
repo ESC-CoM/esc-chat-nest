@@ -3,6 +3,7 @@ import {
   Connection,
   FilterQuery,
   Model,
+  ProjectionType,
   QueryOptions,
   SaveOptions,
   Types,
@@ -31,8 +32,8 @@ export abstract class BaseRepository<TDocument extends BaseSchema> {
     ).toJSON() as unknown as TDocument;
   }
 
-  async findOne(filterQuery: FilterQuery<TDocument>): Promise<TDocument> {
-    const document = await this.model.findOne(filterQuery);
+  async findOne(filterQuery: FilterQuery<TDocument>) {
+    const document = await this.model.findOne(filterQuery, {}, { lean: true });
 
     if (!document) {
       this.logger.warn('Document not found with filterQuery', filterQuery);
@@ -71,9 +72,12 @@ export abstract class BaseRepository<TDocument extends BaseSchema> {
     });
   }
 
-  async find(filterQuery: FilterQuery<TDocument>) {
+  async find(
+    filterQuery: FilterQuery<TDocument>,
+    projection?: ProjectionType<TDocument>,
+  ) {
     return this.model
-      .find(filterQuery, {}, { lean: true })
+      .find(filterQuery, projection ? projection : {}, { lean: true })
       .sort({ createdAt: 1 });
   }
 

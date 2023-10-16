@@ -49,4 +49,14 @@ export class UserService {
     );
     console.log(newVar);
   }
+
+  public async getAccessedTimeWithUser(roomId: string, userIds: string[]) {
+    return await this.repository.find(
+      { id: { $in: userIds } },
+      {
+        id: 1,
+        rooms: { $elemMatch: new Types.ObjectId(roomId), lastAccessedAt: 1 },
+      },
+    );
+  }
 }

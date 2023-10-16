@@ -21,7 +21,10 @@ export class ChatService {
     return createdChat;
   }
 
-  public async searchChat(roomId: string) {
-    return await this.repository.find({ room: new Types.ObjectId(roomId) });
+  public async searchChat(roomId: string, lastAccessedAt?: Date) {
+    return await this.repository.find({
+      room: new Types.ObjectId(roomId),
+      createdAt: { $gte: lastAccessedAt ? lastAccessedAt : 0 },
+    });
   }
 }

@@ -8,6 +8,6 @@ export class User extends BaseSchema {
   @Prop({ required: true })
   id: string;
   @Prop()
-  rooms: { room: ChatRoom; lastAccessedAt: Date }[];
+  rooms: { room: ChatRoom; lastAccessedAt: Date; unreadItemCount: number }[];
 }
 export const UserSchema = SchemaFactory.createForClass(User);

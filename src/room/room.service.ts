@@ -41,9 +41,7 @@ export class RoomService {
 
   public async search(userId: string) {
     const user = await this.userService.findById(userId);
-    const rooms = await this.repository.find({
-      _id: { $in: user.rooms.map((room) => room.room._id) },
-    });
+    const rooms = user.rooms.map((room) => room.room);
     const meetings = await this.meetingService.findByIdIn(
       rooms.map((room) => room.meeting.id),
     );
@@ -53,7 +51,7 @@ export class RoomService {
           (meeting) => meeting.id === room.meeting.id,
         )),
     );
-    return rooms;
+    return user.rooms;
   }
 
   public async sendChat(chat: {

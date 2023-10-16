@@ -74,11 +74,13 @@ export class RoomDto {
   meeting: MeetingDto;
   createdAt: number;
   lastChat: ChatDto;
-  constructor(room: ChatRoom, myId: string) {
+  unreadItemCount: number;
+  constructor(room: ChatRoom, unreadItemCount: number, myId: string) {
     this.id = room._id.toString();
     this.meeting = new MeetingDto(room.meeting, myId);
     this.createdAt = Math.floor(room.createdAt.getTime() / 1000);
     this.lastChat = new ChatDto(room.lastChat);
+    this.unreadItemCount = unreadItemCount;
   }
 }
 

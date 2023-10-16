@@ -25,7 +25,7 @@ export class RoomController {
   public async find(@Req() request: Request & { user: { id: string } }) {
     const results = await this.service.search(request.user.id);
     return results.map((result) => {
-      return new RoomDto(result, request.user.id);
+      return new RoomDto(result.room, result.unreadItemCount, request.user.id);
     });
   }
 

@@ -19,7 +19,7 @@ export class UserService {
       {
         id: { $in: results.map((result) => result.id) },
       },
-      { $push: { rooms: { room, lastAccessedAt: now() } } },
+      { $push: { rooms: { room, lastAccessedAt: now(), unreadItemCount: 0 } } },
     );
   }
 
@@ -37,7 +37,12 @@ export class UserService {
       {
         id: userId,
       },
-      { $set: { 'rooms.$[element].lastAccessedAt': now() } },
+      {
+        $set: {
+          'rooms.$[element].lastAccessedAt': now(),
+          'rooms.$[element].unreadItemCount': 0,
+        },
+      },
       {
         arrayFilters: [{ 'element.room._id': new Types.ObjectId(roomId) }],
       },

@@ -9,8 +9,8 @@ import {
 import { Server, Socket } from 'socket.io';
 import { CustomJwtService } from '../jwt/custom-jwt.service';
 import { instrument } from '@socket.io/admin-ui';
-import * as bcrypt from 'bcrypt';
 import * as process from 'process';
+import * as bcrypt from 'bcryptjs';
 import { CONFIG_URL } from '../main';
 @WebSocketGateway({
   namespace: '/chat-rooms',

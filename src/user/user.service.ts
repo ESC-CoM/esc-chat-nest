@@ -30,4 +30,18 @@ export class UserService {
   public async findById(id: string) {
     return await this.repository.findOne({ id });
   }
+
+  public async accessToRoom(roomId: string, userId: string) {
+    console.log(userId);
+    const newVar = await this.repository.findOneAndUpdate(
+      {
+        id: userId,
+      },
+      { $set: { 'rooms.$[element].lastAccessedAt': now() } },
+      {
+        arrayFilters: [{ 'element.room._id': new Types.ObjectId(roomId) }],
+      },
+    );
+    console.log(newVar);
+  }
 }

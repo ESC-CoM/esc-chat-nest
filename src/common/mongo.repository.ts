@@ -3,6 +3,7 @@ import {
   Connection,
   FilterQuery,
   Model,
+  QueryOptions,
   SaveOptions,
   Types,
   UpdateQuery,
@@ -43,8 +44,10 @@ export abstract class BaseRepository<TDocument extends BaseSchema> {
   async findOneAndUpdate(
     filterQuery: FilterQuery<TDocument>,
     update: UpdateQuery<TDocument>,
+    options?: QueryOptions<TDocument>,
   ) {
     const document = await this.model.findOneAndUpdate(filterQuery, update, {
+      ...options,
       lean: true,
       new: true,
     });

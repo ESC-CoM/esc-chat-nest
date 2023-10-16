@@ -23,7 +23,9 @@ import * as process from 'process';
     ]),
     JwtModule.register({
       global: true,
-      publicKey: Buffer.from(process.env.PUBLIC_KEY).toString('utf-8'),
+      publicKey: Buffer.from(
+        process.env.PUBLIC_KEY.replaceAll('"', '').replaceAll('\\n', '\n'),
+      ).toString('utf-8'),
       verifyOptions: {
         algorithms: ['RS512'],
       },

@@ -19,12 +19,18 @@ export class DetailGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage('connection')
   @UseGuards(JwtAuthGuard)
-  handleMessage(@ConnectedSocket() client: Socket) {
+  async handleMessage(@ConnectedSocket() client: Socket) {
     client.join(this.getRoomId(client.nsp.name));
-    this.userService.accessToRoom(
+    const result = await this.userService.accessToRoom(
       this.getRoomId(client.nsp.name),
       client.handshake.auth.userId,
     );
+    this.io.to(this.getRoomId(client.nsp.name)).emit('room-join', {
+      id: result.id,
+      lastAccessedAt: Math.floor(
+        result.rooms[0].lastAccessedAt.getTime() / 1000,
+      ),
+    });
   }
 
   private getRoomId(namespace: string) {

@@ -33,7 +33,7 @@ export class UserService {
 
   public async accessToRoom(roomId: string, userId: string) {
     console.log(userId);
-    const newVar = await this.repository.findOneAndUpdate(
+    return await this.repository.findOneAndUpdate(
       {
         id: userId,
       },
@@ -47,7 +47,6 @@ export class UserService {
         arrayFilters: [{ 'element.room._id': new Types.ObjectId(roomId) }],
       },
     );
-    console.log(newVar);
   }
 
   public async getAccessedTimeWithUser(roomId: string, userIds: string[]) {

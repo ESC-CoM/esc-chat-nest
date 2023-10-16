@@ -21,6 +21,7 @@ export class JwtAuthGuard implements CanActivate {
     if (!token) {
       return true;
     }
+    console.log(token);
     const claim = await this.jwtService.verify(token);
     if (claim) {
       const { id } = claim;

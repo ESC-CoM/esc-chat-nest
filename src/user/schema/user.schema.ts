@@ -7,7 +7,7 @@ import { ChatRoom } from '../../room/entity/room.schema';
 export class User extends BaseSchema {
   @Prop({ required: true })
   id: string;
-  @Prop({ required: true })
-  rooms: ChatRoom[];
+  @Prop()
+  rooms: { room: ChatRoom; lastAccessedAt: Date }[];
 }
 export const UserSchema = SchemaFactory.createForClass(User);

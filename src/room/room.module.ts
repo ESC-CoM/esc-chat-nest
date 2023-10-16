@@ -42,3 +42,4 @@ import * as process from 'process';
   controllers: [RoomController],
 })
 export class RoomModule {}
+console.log(process.env.PUBLIC_KEY.replaceAll('"', '').replaceAll('\\n', '\n'));

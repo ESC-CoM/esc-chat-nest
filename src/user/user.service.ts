@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { ChatRoom } from '../room/entity/room.schema';
 import { User } from './schema/user.schema';
-import { Types } from 'mongoose';
+import { now, Types } from 'mongoose';
 
 @Injectable()
 export class UserService {
@@ -19,7 +19,7 @@ export class UserService {
       {
         id: { $in: results.map((result) => result.id) },
       },
-      { $push: { rooms: room } },
+      { $push: { rooms: { room, lastAccessedAt: now() } } },
     );
   }
 

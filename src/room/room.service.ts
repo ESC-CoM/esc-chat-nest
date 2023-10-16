@@ -30,19 +30,20 @@ export class RoomService {
     const engagedTeamParticipantIds = meeting.engagedTeam?.participants.map(
       (participant) => participant.id,
     );
-    const participantIds = ownerTeamParticipantIds.concat(
-      engagedTeamParticipantIds,
-    );
-    console.log(participantIds);
-    await this.userService.addRoom(chatRoom, participantIds);
+    if (engagedTeamParticipantIds) {
+      ownerTeamParticipantIds.push(...engagedTeamParticipantIds);
+    }
+    await this.userService.addRoom(chatRoom, ownerTeamParticipantIds);
     this.roomGateway.io
-      .in(participantIds)
+      .in(ownerTeamParticipantIds)
       .emit('room-append', { ...chatRoom, id: chatRoom._id, meeting });
   }
 
   public async search(userId: string) {
     const user = await this.userService.findById(userId);
-    const rooms = await this.repository.find({ _id: { $in: user.rooms } });
+    const rooms = await this.repository.find({
+      _id: { $in: user.rooms.map((room) => room.room._id) },
+    });
     const meetings = await this.meetingService.findByIdIn(
       rooms.map((room) => room.meeting.id),
     );
@@ -70,7 +71,6 @@ export class RoomService {
       sender: sender._id,
     });
     const users = await this.userService.findByRoomId(room._id);
-    room.lastChat = createdChat;
     await this.repository.findOneAndUpdate(
       { _id: room._id },
       { $set: { lastChat: createdChat } },

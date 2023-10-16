@@ -89,6 +89,7 @@ export class ChatDto {
   content: Message;
   createdAt: number;
   constructor(chat: Chat) {
+    if (!chat) return;
     this.id = chat._id.toString();
     this.room = { id: chat.room.toString() };
     this.sender = { id: chat.sender.toString() };

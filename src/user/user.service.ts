@@ -23,6 +23,14 @@ export class UserService {
     );
   }
 
+  public async unreadItemPlus(ids: string[], roomId: Types.ObjectId) {
+    await this.repository.updateAll(
+      { id: { $in: ids } },
+      { $inc: { 'rooms.$[elemenet].unreadItemCount': 1 } },
+      { arrayFilters: [{ 'element.rooms._id': new Types.ObjectId(roomId) }] },
+    );
+  }
+
   public async findByRoomId(roomId: Types.ObjectId) {
     return await this.repository.find({ rooms: roomId });
   }

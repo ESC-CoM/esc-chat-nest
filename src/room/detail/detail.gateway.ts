@@ -1,5 +1,6 @@
 import {
   ConnectedSocket,
+  OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
@@ -11,7 +12,7 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../jwt/jwt.guard';
 
 @WebSocketGateway({ namespace: /\/chat-rooms\/.+/ })
-export class DetailGateway implements OnGatewayDisconnect {
+export class DetailGateway implements OnGatewayDisconnect, OnGatewayConnection {
   @WebSocketServer()
   public io: Server;
 
@@ -39,5 +40,9 @@ export class DetailGateway implements OnGatewayDisconnect {
 
   handleDisconnect(@ConnectedSocket() client: Socket): any {
     client.leave(this.getRoomId(client.nsp.name));
+  }
+
+  handleConnection(client: any, ...args: any[]): any {
+    console.log(client);
   }
 }

@@ -1,5 +1,6 @@
 import {
   ConnectedSocket,
+  OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
   SubscribeMessage,
@@ -9,13 +10,15 @@ import {
 import { Server, Socket } from 'socket.io';
 import { CustomJwtService } from '../jwt/custom-jwt.service';
 import { instrument } from '@socket.io/admin-ui';
-import * as process from 'process';
 import * as bcrypt from 'bcryptjs';
 import { CONFIG_URL } from '../main';
+import * as process from 'process';
 @WebSocketGateway({
   namespace: '/chat-rooms',
 })
-export class RoomGateway implements OnGatewayDisconnect, OnGatewayInit {
+export class RoomGateway
+  implements OnGatewayDisconnect, OnGatewayInit, OnGatewayConnection
+{
   @WebSocketServer()
   public io;
   constructor(private jwtService: CustomJwtService) {}
@@ -46,5 +49,9 @@ export class RoomGateway implements OnGatewayDisconnect, OnGatewayInit {
       auth: { type: 'basic', username, password },
       mode: process.env.NODE_ENV as 'production' | 'development',
     });
+  }
+
+  handleConnection(client: any, ...args: any[]): any {
+    console.log(client);
   }
 }

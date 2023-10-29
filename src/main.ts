@@ -14,6 +14,10 @@ export async function bootstrap() {
     cors: {
       origin: sourceElement,
       credentials: true,
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+      methods: '*',
+      allowedHeaders: '*',
     },
   });
   app.useGlobalFilters(new WsExceptionFilter());

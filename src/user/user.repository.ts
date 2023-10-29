@@ -2,7 +2,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { BaseRepository } from '../common/mongo.repository';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { User } from './schema/user.schema';
-import { Connection, FilterQuery, model, Model, UpdateQuery } from 'mongoose';
+import {
+  Connection,
+  FilterQuery,
+  model,
+  Model,
+  QueryOptions,
+  UpdateQuery,
+} from 'mongoose';
 
 @Injectable()
 export class UserRepository extends BaseRepository<User> {
@@ -18,7 +25,8 @@ export class UserRepository extends BaseRepository<User> {
   public async updateAll(
     filter: FilterQuery<User>,
     command: UpdateQuery<User>,
+    option?: QueryOptions<User>,
   ) {
-    await this.model.updateMany(filter, command);
+    await this.model.updateMany(filter, command, option);
   }
 }

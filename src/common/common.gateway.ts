@@ -20,8 +20,9 @@ export abstract class CommonGateway
   protected constructor(protected jwtService: CustomJwtService) {}
 
   protected abstract getRoomId(client: Socket): Promise<string>;
+
   protected async getUser(client: Socket) {
-    return await this.jwtService.verify(client.handshake.headers.authorization);
+    return await this.jwtService.verify(client.handshake.query.token as string);
   }
 
   @SubscribeMessage('connection')

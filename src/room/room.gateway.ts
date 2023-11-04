@@ -7,32 +7,31 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { CustomJwtService } from '../jwt/custom-jwt.service';
+import { Socket } from 'socket.io';
 import { instrument } from '@socket.io/admin-ui';
 import * as bcrypt from 'bcryptjs';
 import { CONFIG_URL } from '../main';
+import { CommonGateway } from '../common/common.gateway';
+import { CustomJwtService } from '../jwt/custom-jwt.service';
 import * as process from 'process';
+
 @WebSocketGateway({
   namespace: '/chat-rooms',
 })
 export class RoomGateway
+  extends CommonGateway
   implements OnGatewayDisconnect, OnGatewayInit, OnGatewayConnection
 {
   @WebSocketServer()
   public io;
-  constructor(private jwtService: CustomJwtService) {}
 
-  @SubscribeMessage('connection')
-  async connenctEvent(@ConnectedSocket() client: Socket) {
-    client.join(client.handshake.auth.userId);
-    return { event: 'connected', data: client.rooms };
+  constructor(protected jwtService: CustomJwtService) {
+    super(jwtService);
   }
-  async handleDisconnect(@ConnectedSocket() client: Socket): Promise<any> {
-    const user = await this.jwtService.verify(
-      client.handshake.headers.authorization,
-    );
-    client.leave(user.id);
+
+  protected async getRoomId(client: Socket) {
+    const user = await this.getUser(client);
+    return user.id;
   }
 
   async afterInit(server: any) {
@@ -49,9 +48,5 @@ export class RoomGateway
       auth: { type: 'basic', username, password },
       mode: process.env.NODE_ENV as 'production' | 'development',
     });
-  }
-
-  handleConnection(client: any, ...args: any[]): any {
-    console.log(client);
   }
 }

@@ -16,6 +16,7 @@ import { UserModule } from './user/user.module';
 import { HealthController } from './health/health.controller';
 import * as process from 'process';
 import { NextFunction, Request, Response } from 'express';
+import { WsExceptionFilter } from './socket/socket.filter';
 import { AllExceptionsFilter } from './all/all.filter';
 
 @Module({
@@ -26,15 +27,15 @@ import { AllExceptionsFilter } from './all/all.filter';
     UserModule,
   ],
   providers: [
-    CustomJwtService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: AllExceptionsFilter,
-    },
+    // CustomJwtService,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard,
+    // },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: AllExceptionsFilter,
+    // },
   ],
   controllers: [HealthController],
 })

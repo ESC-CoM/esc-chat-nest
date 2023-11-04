@@ -114,8 +114,12 @@ export class RoomService {
       { _id: room._id },
       { $set: { lastChat: createdChat } },
     );
-    this.detailGateway.io.in(chat.roomId).emit('chat-append', createdChat);
-    const sockets = await this.detailGateway.io.in(chat.roomId).fetchSockets();
+    this.detailGateway.io.server
+      .in(chat.roomId)
+      .emit('chat-append', createdChat);
+    const sockets = await this.detailGateway.io.server
+      .in(chat.roomId)
+      .fetchSockets();
     const alreadyIn = sockets.map((socket) => socket.handshake.auth.userId);
     const notIn = users
       .filter((user) => !alreadyIn.includes(user.id))

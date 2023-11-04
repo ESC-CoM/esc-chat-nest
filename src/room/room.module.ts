@@ -1,4 +1,10 @@
-import { Module } from '@nestjs/common';
+import {
+  Injectable,
+  MiddlewareConsumer,
+  Module,
+  NestMiddleware,
+  NestModule,
+} from '@nestjs/common';
 import { UserModule } from '../user/user.module';
 import { ChatModule } from '../chat/chat.module';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -11,6 +17,7 @@ import { RoomGateway } from './room.gateway';
 import { CustomJwtService } from '../jwt/custom-jwt.service';
 import { DetailGateway } from './detail/detail.gateway';
 import { RoomController } from './room.controller';
+import { NextFunction } from 'express';
 
 @Module({
   imports: [
@@ -39,4 +46,16 @@ import { RoomController } from './room.controller';
   ],
   controllers: [RoomController],
 })
-export class RoomModule {}
+export class RoomModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes('');
+  }
+}
+
+@Injectable()
+export class AuthMiddleware implements NestMiddleware {
+  use(req: Request, res: Response, next: NextFunction) {
+    console.log('Request...');
+    next();
+  }
+}

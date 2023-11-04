@@ -10,9 +10,13 @@ export class JwtAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     let token;
+    console.log(
+      JSON.stringify(context.switchToWs().getClient<Socket>().handshake.auth) +
+        'asdsad',
+    );
     if (context.switchToWs().getClient<Socket>().handshake) {
-      token = context.switchToWs().getClient<Socket>().handshake
-        .headers.authorization;
+      token = context.switchToWs().getClient<Socket>().handshake.auth.token;
+      console.log('token:' + token);
     } else {
       token = this.extractBearerToken(
         context.switchToHttp().getRequest<Request>().headers['authorization'],

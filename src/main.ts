@@ -4,7 +4,10 @@ import { WsExceptionFilter } from './socket/socket.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import * as process from 'process';
+import { AllExceptionsFilter } from './all/all.filter';
+
 export const CONFIG_URL = `${process.env.SCHEME}://${process.env.ESC_CONFIG}`;
+
 export async function bootstrap() {
   const result = await fetch(`${CONFIG_URL}/meeting/default`).then((result) =>
     result.json(),
@@ -20,7 +23,7 @@ export async function bootstrap() {
       allowedHeaders: '*',
     },
   });
-  app.useGlobalFilters(new WsExceptionFilter());
+  app.useGlobalFilters(new AllExceptionsFilter());
   const ioAdapter = new IoAdapter(app);
   app.useWebSocketAdapter(ioAdapter);
   const config = new DocumentBuilder()
@@ -33,4 +36,5 @@ export async function bootstrap() {
   SwaggerModule.setup('api', app, document);
   await app.listen(3000);
 }
+
 bootstrap();

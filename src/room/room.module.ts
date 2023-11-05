@@ -46,16 +46,4 @@ import { NextFunction } from 'express';
   ],
   controllers: [RoomController],
 })
-export class RoomModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes('');
-  }
-}
-
-@Injectable()
-export class AuthMiddleware implements NestMiddleware {
-  use(req: Request, res: Response, next: NextFunction) {
-    console.log('Request...');
-    next();
-  }
-}
+export class RoomModule {}

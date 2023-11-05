@@ -27,15 +27,11 @@ import { AllExceptionsFilter } from './all/all.filter';
     UserModule,
   ],
   providers: [
-    // CustomJwtService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: AllExceptionsFilter,
-    // },
+    CustomJwtService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
   controllers: [HealthController],
 })

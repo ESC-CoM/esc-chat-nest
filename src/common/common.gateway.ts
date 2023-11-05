@@ -8,6 +8,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { CustomJwtService } from '../jwt/custom-jwt.service';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
+import { UnauthorizedException } from '@nestjs/common';
 
 export abstract class CommonGateway
   implements OnGatewayDisconnect, OnGatewayConnection
@@ -22,6 +23,16 @@ export abstract class CommonGateway
   protected abstract getRoomId(client: Socket): Promise<string>;
 
   protected async getUser(client: Socket) {
+    if (!client.handshake.auth.id) {
+      client.emit('error', {
+        code: 'LOGIN_REQUIRED',
+        message: '로그인이 필요합니다.',
+      });
+      throw new UnauthorizedException({
+        code: 'LOGIN_REQUIRED',
+        message: '로그인이 필요합니다.',
+      });
+    }
     return await this.jwtService.verify(client.handshake.query.token as string);
   }
 

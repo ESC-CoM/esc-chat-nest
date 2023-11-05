@@ -4,42 +4,27 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Socket } from 'socket.io';
 import { Error } from 'mongoose';
 import { WsException } from '@nestjs/websockets';
-import e from 'express';
+import e, { Request, Response } from 'express';
+import { BaseResponse } from '../common/base-response';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
-
-  catch(exception: Error, host: ArgumentsHost): void {
-    // In certain situations `httpAdapter` might not be available in the
-    // constructor method, thus we should resolve it here.
-    const { httpAdapter } = this.httpAdapterHost;
-
+  catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
+    const request = ctx.getRequest<Request>();
+    const hostname = request.headers.origin;
 
-    const httpStatus =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
-
-    const responseBody = {
-      statusCode: httpStatus,
-      timestamp: new Date().toISOString(),
-      path: httpAdapter.getRequestUrl(ctx.getRequest()),
-    };
-    console.log(exception);
-    // if (host.getType() === 'ws') {
-    //   throw new WsException({
-    //     code: exception.name,
-    //     message: exception.message,
-    //   });
-    // }
-    httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+    ctx
+      .getResponse<Response>()
+      .status(exception.getStatus())
+      .setHeader('Access-Control-Allow-Origin', hostname)
+      .json(new BaseResponse(exception));
   }
 
   catchWs(exception: WsException, host: ArgumentsHost) {

@@ -9,34 +9,21 @@ export class JwtAuthGuard implements CanActivate {
   constructor(private readonly jwtService: CustomJwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    let token;
-    console.log(
-      JSON.stringify(context.switchToWs().getClient<Socket>().handshake.auth) +
-        'asdsad',
-    );
-    if (context.switchToWs().getClient<Socket>().handshake) {
-      token = context.switchToWs().getClient<Socket>().handshake.auth.token;
-      console.log('token:' + token);
-    } else {
-      token = this.extractBearerToken(
-        context.switchToHttp().getRequest<Request>().headers['authorization'],
-      );
-    }
-    if (!token) {
-      return true;
-    }
-    const claim = await this.jwtService.verify(token);
-    if (claim) {
-      const { id } = claim;
-      if (context.switchToWs().getClient<Socket>().handshake) {
-        const auth = context.switchToWs().getClient<Socket>().handshake.auth;
-        auth.userId = id;
-      } else {
-        context
+    switch (context.getType()) {
+      case 'http':
+        const request = context
           .switchToHttp()
-          .getRequest<Request & { user: { id: string } }>().user = { id };
-      }
-      return true;
+          .getRequest<Request & { user: { id: string } }>();
+        request.user = await this.jwtService.verify(
+          this.extractBearerToken(request.headers.authorization),
+        );
+        break;
+      case 'ws':
+        const handshake = context.switchToWs().getClient<Socket>().handshake;
+        handshake.auth = await this.jwtService.verify(
+          handshake.query.token as string,
+        );
+        break;
     }
     return true;
   }

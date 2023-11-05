@@ -14,18 +14,20 @@ import { CONFIG_URL } from '../main';
 import { CommonGateway } from '../common/common.gateway';
 import { CustomJwtService } from '../jwt/custom-jwt.service';
 import * as process from 'process';
-import { UnauthorizedException } from '@nestjs/common';
 
 @WebSocketGateway({
   namespace: '/chat-rooms',
 })
 export class RoomGateway
+  extends CommonGateway
   implements OnGatewayDisconnect, OnGatewayInit, OnGatewayConnection
 {
   @WebSocketServer()
   public io;
 
-  constructor(protected jwtService: CustomJwtService) {}
+  constructor(protected jwtService: CustomJwtService) {
+    super(jwtService);
+  }
 
   protected async getRoomId(client: Socket) {
     const user = await this.getUser(client);
@@ -46,43 +48,5 @@ export class RoomGateway
       auth: { type: 'basic', username, password },
       mode: process.env.NODE_ENV as 'production' | 'development',
     });
-  }
-
-  protected async getUser(client: Socket) {
-    if (!client.handshake.auth.id) {
-      client.emit('error', {
-        code: 'LOGIN_REQUIRED',
-        message: '로그인이 필요합니다.',
-      });
-      throw new UnauthorizedException({
-        code: 'LOGIN_REQUIRED',
-        message: '로그인이 필요합니다.',
-      });
-    }
-    return await this.jwtService.verify(client.handshake.query.token as string);
-  }
-
-  @SubscribeMessage('connection')
-  async connenctEvent(@ConnectedSocket() client: Socket) {
-    console.log('connection');
-    try {
-      const roomId = await this.getRoomId(client);
-      client.join(roomId);
-      return { event: 'connected', data: client.rooms };
-    } catch (e) {
-      console.log(e.response);
-      client.emit('error', e.response);
-    } finally {
-      client.disconnect();
-    }
-  }
-
-  async handleDisconnect(@ConnectedSocket() client: Socket): Promise<any> {
-    console.log('disconnect');
-    client.disconnect();
-  }
-
-  handleConnection(client: any, ...args: any[]): any {
-    console.log('connected');
   }
 }

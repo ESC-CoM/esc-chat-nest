@@ -17,7 +17,7 @@ export async function bootstrap() {
     cors: {
       origin: sourceElement,
       credentials: true,
-      preflightContinue: false,
+      preflightContinue: true,
       optionsSuccessStatus: 204,
       methods: '*',
       allowedHeaders: '*',

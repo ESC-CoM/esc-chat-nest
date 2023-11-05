@@ -18,6 +18,8 @@ import { CustomJwtService } from '../jwt/custom-jwt.service';
 import { DetailGateway } from './detail/detail.gateway';
 import { RoomController } from './room.controller';
 import { NextFunction } from 'express';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from '../jwt/jwt.guard';
 
 @Module({
   imports: [
@@ -43,6 +45,8 @@ import { NextFunction } from 'express';
     RoomGateway,
     CustomJwtService,
     DetailGateway,
+    CustomJwtService,
+    JwtAuthGuard,
   ],
   controllers: [RoomController],
 })

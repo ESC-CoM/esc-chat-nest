@@ -18,13 +18,23 @@ export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<Request>();
-    const hostname = request.headers.origin;
-
-    ctx
-      .getResponse<Response>()
-      .status(exception.getStatus())
-      .setHeader('Access-Control-Allow-Origin', hostname)
-      .json(new BaseResponse(exception));
+    let hostname = request.headers.referer;
+    if (host.getType() == 'http') {
+      console.log(host.getType());
+      console.log(hostname);
+      const response = ctx
+        .getResponse<Response>()
+        .status(
+          exception instanceof HttpException ? exception.getStatus() : 500,
+        );
+      if (hostname) {
+        if (hostname.endsWith('/')) {
+          hostname = hostname.slice(0, -1);
+        }
+        response.setHeader('Access-Control-Allow-Origin', hostname);
+      }
+      response.json(new BaseResponse(exception.getResponse()));
+    }
   }
 
   catchWs(exception: WsException, host: ArgumentsHost) {

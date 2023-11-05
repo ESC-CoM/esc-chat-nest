@@ -26,13 +26,7 @@ import { AllExceptionsFilter } from './all/all.filter';
     RoomModule,
     UserModule,
   ],
-  providers: [
-    CustomJwtService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-  ],
+  providers: [],
   controllers: [HealthController],
 })
 export class AppModule implements NestModule {

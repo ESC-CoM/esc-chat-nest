@@ -14,14 +14,7 @@ export async function bootstrap() {
   );
   const sourceElement = result.propertySources[0].source['cors-list'];
   const app = await NestFactory.create(AppModule, {
-    cors: {
-      origin: sourceElement,
-      credentials: true,
-      preflightContinue: false,
-      optionsSuccessStatus: 204,
-      methods: '*',
-      allowedHeaders: '*',
-    },
+    cors: true,
   });
   app.useGlobalFilters(new AllExceptionsFilter());
   const ioAdapter = new IoAdapter(app);

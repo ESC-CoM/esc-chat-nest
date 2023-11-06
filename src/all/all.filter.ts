@@ -11,7 +11,7 @@ import { Socket } from 'socket.io';
 import { Error } from 'mongoose';
 import { WsException } from '@nestjs/websockets';
 import e, { Request, Response } from 'express';
-import { BaseResponse } from '../common/base-response';
+import { BaseErrorResponse, BaseResponse } from '../common/base-response';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -33,7 +33,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         }
         response.setHeader('Access-Control-Allow-Origin', hostname);
       }
-      response.json(new BaseResponse(exception.getResponse()));
+      response.json(new BaseErrorResponse(exception));
     }
   }
 

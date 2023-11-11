@@ -56,7 +56,7 @@ export class RoomController {
   ) {
     const chatRoom = await this.service.findDetail(roomId);
     console.log(chatRoom);
-    return new RoomDto(chatRoom, request.user.id);
+    return new BaseResponse(new RoomDto(chatRoom, request.user.id));
   }
 
   @Post(':id/chats')
@@ -85,6 +85,6 @@ export class RoomController {
   @UseGuards(JwtAuthGuard)
   public async searchChats(@Param('id') roomId: string) {
     const chats = await this.service.searchChat(roomId);
-    return chats.map((chat) => new ChatDto(chat));
+    return new BaseResponse(chats.map((chat) => new ChatDto(chat)));
   }
 }

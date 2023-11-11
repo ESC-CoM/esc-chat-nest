@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Meeting } from '../entity/room.schema';
+import { API_URL } from '../../main';
 
 @Injectable()
 export class MeetingService {
-  private baseUrl = `${process.env.API_URL}/api/v1/meetings`;
+  private baseUrl = `${API_URL}/api/v1/meetings`;
   public async find(meetingId: string) {
     const meetings = await this.findByIdIn([meetingId]);
     if (meetings.length == 0) {

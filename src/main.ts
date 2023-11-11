@@ -7,8 +7,8 @@ import * as process from 'process';
 import { AllExceptionsFilter } from './all/all.filter';
 import * as https from 'https';
 
-export const CONFIG_URL = `${process.env.SCHEME}://${process.env.ESC_CONFIG}`;
-
+export const CONFIG_URL = `${process.env.SCHEME}://${process.env.ESC_CONFIG}${process.env.ESC_CONFIG_PORT}`;
+export const API_URL = `${process.env.SCHEME}://${process.env.ESC_API}${process.env.ESC_API_PORT}`;
 export async function bootstrap() {
   const result = await fetch(`${CONFIG_URL}/meeting/default`).then((result) =>
     result.json(),

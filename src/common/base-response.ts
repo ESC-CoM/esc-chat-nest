@@ -1,5 +1,5 @@
 import { Error } from 'mongoose';
-import { HttpException } from '@nestjs/common';
+import { HttpException, InternalServerErrorException } from '@nestjs/common';
 import * as stream from 'stream';
 
 export class BaseResponse<T> {
@@ -13,14 +13,11 @@ export class BaseResponse<T> {
   }
 }
 
-export class BaseErrorResponse<T> {
+export class BaseErrorResponse {
   private status: number;
   private errorId: string;
   private message: string;
   constructor(data) {
-    if (data instanceof Error) {
-      this.status = 500;
-    }
     if (data instanceof HttpException) {
       const { code, message } = data.getResponse() as object & {
         code: string;
@@ -29,6 +26,11 @@ export class BaseErrorResponse<T> {
       this.status = data.getStatus();
       this.errorId = code;
       this.message = message;
+    }
+    if (data instanceof Error) {
+      this.status = 500;
+      this.errorId = InternalServerErrorException.name;
+      this.message = data.message;
     }
   }
 }

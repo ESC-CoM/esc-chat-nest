@@ -17,6 +17,7 @@ import { Message } from '../chat/schema/chat.schema';
 import { find } from 'rxjs';
 import { request } from 'express';
 import { JwtAuthGuard } from '../jwt/jwt.guard';
+import { BaseResponse } from '../common/base-response';
 
 @Controller('/api/v1/chat-rooms')
 export class RoomController {
@@ -35,9 +36,15 @@ export class RoomController {
   @UseGuards(JwtAuthGuard)
   public async find(@Req() request: Request & { user: { id: string } }) {
     const results = await this.service.search(request.user.id);
-    return results.map((result) => {
-      return new RoomDto(result.room, request.user.id, result.unreadItemCount);
-    });
+    return new BaseResponse(
+      results.map((result) => {
+        return new RoomDto(
+          result.room,
+          request.user.id,
+          result.unreadItemCount,
+        );
+      }),
+    );
   }
 
   @Get(':id')

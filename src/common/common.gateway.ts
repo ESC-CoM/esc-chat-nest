@@ -23,7 +23,7 @@ export abstract class CommonGateway
   protected abstract getRoomId(client: Socket): Promise<string>;
 
   protected async getUser(client: Socket) {
-    if (!client.handshake.auth.id) {
+    if (!client.handshake.query.token) {
       client.emit('error', {
         code: 'LOGIN_REQUIRED',
         message: '로그인이 필요합니다.',
@@ -46,14 +46,12 @@ export abstract class CommonGateway
     } catch (e) {
       console.log(e.response);
       client.emit('error', e.response);
-    } finally {
       client.disconnect();
     }
   }
 
   async handleDisconnect(@ConnectedSocket() client: Socket): Promise<any> {
     console.log('disconnect');
-    client.disconnect();
   }
 
   handleConnection(client: any, ...args: any[]): any {

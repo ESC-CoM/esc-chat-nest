@@ -17,6 +17,7 @@ import { BaseErrorResponse, BaseResponse } from '../common/base-response';
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   private logger = new Logger('Exception');
+
   catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     this.logger.error(exception);

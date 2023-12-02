@@ -38,7 +38,7 @@ export class JwtAuthGuard implements CanActivate {
     if (parts.length !== 2 || parts[0] !== 'Bearer') {
       return null;
     }
-
+    console.log(parts);
     return parts[1];
   }
 }

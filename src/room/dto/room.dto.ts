@@ -14,12 +14,15 @@ export class RoomDto {
   lastChat?: ChatDto;
   @ApiProperty()
   unreadItemCount?: number;
+  @ApiProperty()
+  myUserId?: string;
   constructor(room: ChatRoom, myId: string, unreadItemCount?: number) {
     this.id = room._id.toString();
     this.meeting = new MeetingDto(room.meeting, myId);
     this.createdAt = Math.floor(room.createdAt.getTime() / 1000);
     this.lastChat = new ChatDto(room.lastChat);
     this.unreadItemCount = unreadItemCount;
+    this.myUserId = myId;
   }
 }
 

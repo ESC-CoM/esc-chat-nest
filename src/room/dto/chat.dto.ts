@@ -18,7 +18,7 @@ export class ChatDto {
     if (!chat) return;
     this.id = chat._id.toString();
     this.room = { id: chat.room.toString() };
-    this.sender = { id: chat.sender.toString() };
+    this.sender = { id: chat.sender.id };
     this.content = chat.content;
     this.createdAt = Math.floor(chat.createdAt.getTime() / 1000);
   }

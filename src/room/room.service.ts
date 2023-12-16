@@ -107,7 +107,7 @@ export class RoomService {
     const createdChat = await this.chatService.sendChat({
       content: { message: chat.message },
       room: room._id,
-      sender: sender._id,
+      sender: sender,
     });
     const users = await this.userService.findByRoomId(room._id);
     await this.repository.findOneAndUpdate(

@@ -4,6 +4,7 @@ import { ChatRoom, ChatRoomSchema } from '../../room/entity/room.schema';
 import { User, UserSchema } from '../../user/schema/user.schema';
 import { now, Types } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import * as inspector from 'inspector';
 export class Message {
   @ApiProperty()
   message: string;
@@ -16,7 +17,7 @@ export class Chat extends BaseSchema {
     required: true,
     ref: User.name,
   })
-  sender: Types.ObjectId;
+  sender: User;
   @Prop({ type: Message, required: true })
   content: Message;
 }

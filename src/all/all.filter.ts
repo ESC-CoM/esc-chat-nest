@@ -21,6 +21,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     this.logger.error(exception);
+    console.log(exception);
     ctx
       .getResponse<Response>()
       .status(exception instanceof HttpException ? exception.getStatus() : 500)

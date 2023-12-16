@@ -26,7 +26,7 @@ export class UserService {
   public async unreadItemPlus(ids: string[], roomId: Types.ObjectId) {
     await this.repository.updateAll(
       { id: { $in: ids } },
-      { $inc: { 'rooms.$[elemenet].unreadItemCount': 1 } },
+      { $inc: { 'rooms.$.unreadItemCount': 1 } },
       { arrayFilters: [{ 'element.rooms._id': new Types.ObjectId(roomId) }] },
     );
   }

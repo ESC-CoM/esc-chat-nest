@@ -2,6 +2,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import { RoomDto } from './room.dto';
 import { User } from '../../user/schema/user.schema';
 import { Chat, Message } from '../../chat/schema/chat.schema';
+import * as moment from 'moment-timezone';
 
 export class ChatDto {
   @ApiProperty()
@@ -14,12 +15,13 @@ export class ChatDto {
   content: Message;
   @ApiProperty()
   createdAt: number;
+
   constructor(chat: Chat) {
     if (!chat) return;
     this.id = chat._id.toString();
     this.room = { id: chat.room.toString() };
     this.sender = { id: chat.sender.id };
     this.content = chat.content;
-    this.createdAt = Math.floor(chat.createdAt.getTime() / 1000);
+    this.createdAt = moment(chat.createdAt.toString()).tz('Asia/Seoul').unix();
   }
 }

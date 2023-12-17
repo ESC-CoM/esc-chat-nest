@@ -78,6 +78,7 @@ export class RoomController {
       roomId,
       senderId: request.user.id,
     });
+    return new BaseResponse(true);
   }
 
   @Get(':id/chats')

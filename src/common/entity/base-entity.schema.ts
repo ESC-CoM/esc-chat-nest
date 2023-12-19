@@ -5,9 +5,9 @@ import { now, SchemaTypes, Types } from 'mongoose';
 export class BaseSchema {
   @Prop({ type: SchemaTypes.ObjectId })
   _id: Types.ObjectId;
-  @Prop({ default: now() })
+  @Prop({ default: () => now() })
   createdAt: Date;
 
-  @Prop({ default: now() })
+  @Prop({ default: () => now() })
   updatedAt: Date;
 }

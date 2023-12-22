@@ -14,8 +14,6 @@ import { RoomDetailDto, RoomDto } from './dto/room.dto';
 import { ApiBody, ApiResponse, OmitType } from '@nestjs/swagger';
 import { ChatDto } from './dto/chat.dto';
 import { Message } from '../chat/schema/chat.schema';
-import { find } from 'rxjs';
-import { request } from 'express';
 import { JwtAuthGuard } from '../jwt/jwt.guard';
 import { BaseResponse } from '../common/base-response';
 
@@ -63,7 +61,7 @@ export class RoomController {
   @ApiBody({ type: Message })
   @UseGuards(JwtAuthGuard)
   public async sendMessage(
-    @Req() request: Request & { user: { id: string } },
+    @Req() request,
     @Param('id') roomId: string,
     @Body() dto: { message: string },
   ) {
@@ -73,12 +71,12 @@ export class RoomController {
         message: '로그인이 필요합니다.',
       });
     }
-    await this.service.sendChat({
+    const chat = await this.service.sendChat({
       ...dto,
       roomId,
       senderId: request.user.id,
     });
-    return new BaseResponse(true);
+    return new BaseResponse(new ChatDto(chat));
   }
 
   @Get(':id/chats')

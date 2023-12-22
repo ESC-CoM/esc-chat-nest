@@ -128,6 +128,7 @@ export class RoomService {
     this.roomGateway.io
       .in(users.map((user) => user.id))
       .emit('last-chat-append', createdChat);
+    return createdChat;
   }
 
   public async searchChat(roomId: string) {

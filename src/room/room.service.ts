@@ -75,7 +75,8 @@ export class RoomService {
     );
     const participantIds = this.getParticipantIds(meeting);
     await this.userService.addRoom(chatRoom, participantIds);
-    this.roomGateway.io
+    this.roomGateway.io.server
+      .of('/chat-rooms')
       .in(participantIds)
       .emit('room-append', { ...chatRoom, id: chatRoom._id, meeting });
   }
@@ -117,9 +118,11 @@ export class RoomService {
     console.log(createdChat);
     console.log(chat.roomId);
     this.detailGateway.io.server
+      .of(`/chat-rooms/${chat.roomId}`)
       .to(chat.roomId)
       .emit('chat-append', createdChat);
     const sockets = await this.detailGateway.io.server
+      .of(`/chat-rooms/${chat.roomId}`)
       .in(chat.roomId)
       .fetchSockets();
     const alreadyIn = sockets.map((socket) => socket.handshake.auth.userId);
@@ -127,7 +130,8 @@ export class RoomService {
       .filter((user) => !alreadyIn.includes(user.id))
       .map((user) => user.id);
     await this.userService.unreadItemPlus(notIn, room._id);
-    this.roomGateway.io
+    this.roomGateway.io.server
+      .of('/chat-rooms')
       .to(users.map((user) => user.id))
       .emit('last-chat-append', createdChat);
     return createdChat;

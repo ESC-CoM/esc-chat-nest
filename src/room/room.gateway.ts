@@ -22,9 +22,6 @@ export class RoomGateway
   extends CommonGateway
   implements OnGatewayDisconnect, OnGatewayInit, OnGatewayConnection
 {
-  @WebSocketServer()
-  public io;
-
   constructor(protected jwtService: CustomJwtService) {
     super(jwtService);
   }

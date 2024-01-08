@@ -41,6 +41,7 @@ export abstract class CommonGateway
     console.log('connection');
     try {
       const roomId = await this.getRoomId(client);
+      console.log(roomId);
       client.join(roomId);
       return { event: 'connected', data: client.rooms };
     } catch (e) {

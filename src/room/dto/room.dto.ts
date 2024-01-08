@@ -20,7 +20,9 @@ export class RoomDto {
   constructor(room: ChatRoom, myId: string, unreadItemCount?: number) {
     this.id = room._id.toString();
     this.meeting = new MeetingDto(room.meeting, myId);
-    this.createdAt = moment(room.createdAt.toString()).tz('Asia/Seoul').unix();
+    this.createdAt = moment(room.createdAt.toISOString())
+      .tz('Asia/Seoul')
+      .valueOf();
     this.lastChat = new ChatDto(room.lastChat);
     this.unreadItemCount = unreadItemCount;
     this.myUserId = myId;

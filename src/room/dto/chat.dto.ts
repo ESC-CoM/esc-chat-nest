@@ -22,6 +22,8 @@ export class ChatDto {
     this.room = { id: chat.room.toString() };
     this.sender = { id: chat.sender.id };
     this.content = chat.content;
-    this.createdAt = moment(chat.createdAt.toString()).tz('Asia/Seoul').unix();
+    this.createdAt = moment(chat.createdAt.toISOString())
+      .tz('Asia/Seoul')
+      .valueOf();
   }
 }

@@ -114,8 +114,10 @@ export class RoomService {
       { _id: room._id },
       { $set: { lastChat: createdChat } },
     );
+    console.log(createdChat);
+    console.log(chat.roomId);
     this.detailGateway.io.server
-      .in(chat.roomId)
+      .to(chat.roomId)
       .emit('chat-append', createdChat);
     const sockets = await this.detailGateway.io.server
       .in(chat.roomId)
@@ -126,7 +128,7 @@ export class RoomService {
       .map((user) => user.id);
     await this.userService.unreadItemPlus(notIn, room._id);
     this.roomGateway.io
-      .in(users.map((user) => user.id))
+      .to(users.map((user) => user.id))
       .emit('last-chat-append', createdChat);
     return createdChat;
   }

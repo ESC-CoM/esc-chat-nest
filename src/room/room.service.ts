@@ -8,6 +8,7 @@ import { FlattenMaps, Types } from 'mongoose';
 import { DetailGateway } from './detail/detail.gateway';
 import { User } from '../user/schema/user.schema';
 import { Meeting } from './entity/room.schema';
+import { ChatDto } from './dto/chat.dto';
 
 @Injectable()
 export class RoomService {
@@ -120,7 +121,7 @@ export class RoomService {
     this.detailGateway.io.server
       .of(`/chat-rooms/${chat.roomId}`)
       .to(chat.roomId)
-      .emit('chat-append', createdChat);
+      .emit('chat-append', new ChatDto(createdChat));
     const sockets = await this.detailGateway.io.server
       .of(`/chat-rooms/${chat.roomId}`)
       .in(chat.roomId)
@@ -133,7 +134,7 @@ export class RoomService {
     this.roomGateway.io.server
       .of('/chat-rooms')
       .to(users.map((user) => user.id))
-      .emit('last-chat-append', createdChat);
+      .emit('last-chat-append', new ChatDto(createdChat));
     return createdChat;
   }
 

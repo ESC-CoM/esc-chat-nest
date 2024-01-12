@@ -116,12 +116,11 @@ export class RoomService {
       { _id: room._id },
       { $set: { lastChat: createdChat } },
     );
-    console.log(createdChat);
-    console.log(chat.roomId);
+    const result = new ChatDto(createdChat);
     this.detailGateway.io.server
       .of(`/chat-rooms/${chat.roomId}`)
       .to(chat.roomId)
-      .emit('chat-append', new ChatDto(createdChat));
+      .emit('chat-append', result);
     const sockets = await this.detailGateway.io.server
       .of(`/chat-rooms/${chat.roomId}`)
       .in(chat.roomId)
@@ -134,7 +133,7 @@ export class RoomService {
     this.roomGateway.io.server
       .of('/chat-rooms')
       .to(users.map((user) => user.id))
-      .emit('last-chat-append', new ChatDto(createdChat));
+      .emit('last-chat-append', result);
     return createdChat;
   }
 

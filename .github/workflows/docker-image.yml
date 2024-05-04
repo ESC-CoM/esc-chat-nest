@@ -28,18 +28,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Add Github Actions IP to Security group
-        run: |
-          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 5723 --cidr ${{ steps.ip.outputs.ipv4 }}/32
-
       - name: Build the server
         run: |
           ./enable_environment.sh
 
-      - name: Remove Github Actions IP From Security Group
-        continue-on-error: true
-        run: |
-          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 5723 --cidr ${{ steps.ip.outputs.ipv4 }}/32
       - id: commit
         uses: pr-mpt/actions-commit-hash@v2
       - name: Set up Docker Buildx

@@ -10,6 +10,7 @@ import { ChatModule } from './chat/chat.module';
 import { RoomModule } from './room/room.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
+import { HealthController } from './health/health.controller';
 import * as process from 'process';
 import { NextFunction, Request, Response } from 'express';
 
@@ -21,6 +22,7 @@ import { NextFunction, Request, Response } from 'express';
     UserModule,
   ],
   providers: [],
+  controllers: [HealthController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

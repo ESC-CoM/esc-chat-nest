@@ -84,6 +84,8 @@ export class RoomService {
 
   public async search(userId: string) {
     const user = await this.userService.findById(userId);
+    if (!user) return [];
+
     const rooms = user.rooms.map((room) => room.room);
     const meetings = await this.meetingService.findByIdIn(
       rooms.map((room) => room.meeting.id),

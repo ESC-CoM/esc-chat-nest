@@ -36,11 +36,11 @@ export class UserService {
   }
 
   public async findById(id: string) {
-    return await this.repository.findOne({ id });
+    const user = await this.repository.findOne({ id });
+    return user;
   }
 
   public async accessToRoom(roomId: string, userId: string) {
-    console.log(userId);
     return await this.repository.findOneAndUpdate(
       {
         id: userId,

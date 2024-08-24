@@ -18,7 +18,7 @@ export class ChatService {
   public async sendChat(chat: Partial<Chat>) {
     const createdChat = await this.repository.create(chat);
     this.gateway.io
-      .in(createdChat.room._id.toString() + '')
+      .to(createdChat.room._id.toString() + '')
       .emit('chat-append', createdChat);
     return createdChat;
   }

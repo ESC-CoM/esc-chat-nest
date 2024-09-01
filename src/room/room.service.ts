@@ -90,8 +90,8 @@ export class RoomService {
     const meetings = await this.meetingService.findByIdIn(
       rooms.map((room) => room.meeting.id),
     );
-    rooms.forEach(
-      (room) =>
+    user.rooms.forEach(
+      ({ room }) =>
         (room.meeting = meetings.find(
           (meeting) => meeting.id === room.meeting.id,
         )),
@@ -105,19 +105,23 @@ export class RoomService {
     senderId: string;
   }) {
     const sender = await this.userService.findById(chat.senderId);
+
     const room = await this.repository.findOne({
       _id: new Types.ObjectId(chat.roomId),
     });
+
     const createdChat = await this.chatService.sendChat({
       content: { message: chat.message },
       room: room._id,
       sender: sender,
     });
+
     const users = await this.userService.findByRoomId(room._id);
     await this.repository.findOneAndUpdate(
       { _id: room._id },
       { $set: { lastChat: createdChat } },
     );
+
     const result = new ChatDto(createdChat);
     this.detailGateway.io.server
       .of(`/chat-rooms/${chat.roomId}`)

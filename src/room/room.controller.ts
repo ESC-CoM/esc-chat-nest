@@ -53,7 +53,6 @@ export class RoomController {
     @Req() request: Request & { user: { id: string } },
   ) {
     const chatRoom = await this.service.findDetail(roomId);
-    console.log(chatRoom);
     return new BaseResponse(new RoomDto(chatRoom, request.user.id));
   }
 

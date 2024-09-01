@@ -5,6 +5,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Query,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -81,8 +82,29 @@ export class RoomController {
   @Get(':id/chats')
   @ApiResponse({ type: [ChatDto] })
   @UseGuards(JwtAuthGuard)
-  public async searchChats(@Param('id') roomId: string) {
-    const chats = await this.service.searchChat(roomId);
-    return new BaseResponse(chats.map((chat) => new ChatDto(chat)));
+  public async searchChats(
+    @Param('id') roomId: string,
+    @Query() { page, size }: { page: string; size: string },
+  ) {
+    const chats = await this.service.searchChat(roomId, {
+      page: Number(page),
+      size: Number(size),
+    });
+    const prevPage = Number(page) - 1 < 0 ? 0 : Number(page) - 1;
+    const hasPrevious = !!(await this.service.searchChat(roomId, {
+      page: prevPage,
+      size: 1,
+    }));
+    const hasNext = !!(await this.service.searchChat(roomId, {
+      page: Number(page) + 1,
+      size: 1,
+    }));
+    return new BaseResponse({
+      content: chats.map((chat) => new ChatDto(chat)),
+      currentPageNumber: page,
+      hasNext,
+      hasPrevious,
+      pageSize: size,
+    });
   }
 }

@@ -23,7 +23,11 @@ export class ChatService {
     return createdChat;
   }
 
-  public async searchChat(roomId: string, lastAccessedAt?: Date) {
+  public async searchChat(
+    roomId: string,
+    { page, size }: { page: number; size: number },
+    lastAccessedAt?: Date,
+  ) {
     return this.model
       .find(
         {
@@ -38,6 +42,8 @@ export class ChatService {
           sender: true,
         },
       )
+      .skip(page * size)
+      .limit(size)
       .populate('sender');
   }
 }

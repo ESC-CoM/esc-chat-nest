@@ -29,6 +29,6 @@ export class MeetingService {
     )
       .then((result) => result.json())
       .then((res) => res.data);
-    return result;
+    return result ?? [];
   }
 }

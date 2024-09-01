@@ -42,6 +42,7 @@ export class ChatService {
           sender: true,
         },
       )
+      .sort({ createdAt: -1 })
       .skip(page * size)
       .limit(size)
       .populate('sender');

@@ -143,7 +143,10 @@ export class RoomService {
     return createdChat;
   }
 
-  public async searchChat(roomId: string) {
-    return await this.chatService.searchChat(roomId);
+  public async searchChat(
+    roomId: string,
+    { page, size }: { page: number; size: number },
+  ) {
+    return await this.chatService.searchChat(roomId, { page, size });
   }
 }

@@ -13,14 +13,19 @@ export const CONFIG_URL = `${process.env.SCHEME}://${process.env.ESC_CONFIG}${pr
 export const API_URL = `https://${process.env.ESC_API}${process.env.ESC_API_PORT}`;
 
 export async function bootstrap() {
-  const result = await fetch(`${CONFIG_URL}/meeting/default`).then((result) =>
-    result.json(),
-  );
-  const sourceElement =
-    result.propertySources[0].source['cors-list'].split(', ');
+  // const result = await fetch(`${CONFIG_URL}/meeting/default`).then((result) =>
+  //   result.json(),
+  // );
+  // const sourceElement =
+  //   result.propertySources[0].source['cors-list'].split(', ');
+  // console.log({ sourceElement });
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: [...sourceElement, 'http://localhost:3001'],
+      origin: [
+        'https://www.meething.net',
+        'http://localhost:3000',
+        'http://localhost:3001',
+      ],
       methods: '*',
       credentials: true,
     },

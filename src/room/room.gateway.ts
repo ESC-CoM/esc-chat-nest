@@ -32,13 +32,14 @@ export class RoomGateway
   }
 
   async afterInit(server: any) {
-    const result = await fetch(
-      `${CONFIG_URL}/meeting/${process.env.PROFILE}`,
-    ).then((result) => result.json());
-    const username =
-      result.propertySources[1].source['spring.security.user.name'];
+    // const result = await fetch(
+    //   `${CONFIG_URL}/meeting/${process.env.PROFILE}`,
+    // ).then((result) => result.json());
+    const username = 'admin';
+    // result.propertySources[1].source['spring.security.user.name'];
     const password = await bcrypt.hash(
-      result.propertySources[1].source['spring.security.user.password'],
+      'jsween5723!!',
+      // result.propertySources[1].source['spring.security.user.password'],
       await bcrypt.genSalt(),
     );
     instrument(this.io.server, {

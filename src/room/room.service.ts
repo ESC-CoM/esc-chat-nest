@@ -70,16 +70,20 @@ export class RoomService {
   }
   public async create(meetingId: string) {
     const meeting = await this.meetingService.find(meetingId);
+    console.log('미팅 정보 찾음: ', meeting);
     const chatRoom = await this.repository.upsert(
       { 'meeting.id': meeting.id },
       { meeting },
     );
+    console.log('채팅방 upsert: ', chatRoom);
     const participantIds = this.getParticipantIds(meeting);
     await this.userService.addRoom(chatRoom, participantIds);
+    console.log('addRoom 완료');
     this.roomGateway.io.server
       .of('/chat-rooms')
       .in(participantIds)
       .emit('room-append', { ...chatRoom, id: chatRoom._id, meeting });
+    console.log('생성 완료');
   }
 
   public async search(userId: string) {

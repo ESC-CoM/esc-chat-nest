@@ -10,7 +10,8 @@ import * as https from 'https';
 
 export const CONFIG_URL = `${process.env.SCHEME}://${process.env.ESC_CONFIG}${process.env.ESC_CONFIG_PORT}`;
 // NOTE: dev사용 안하고 싶으면 https://api.meething.net로 바꿔서 사용
-export const API_URL = `https://${process.env.ESC_API}${process.env.ESC_API_PORT}`;
+export const API_URL = 'https://api.meething.net';
+// `https://${process.env.ESC_API}${process.env.ESC_API_PORT}`;
 
 export async function bootstrap() {
   // const result = await fetch(`${CONFIG_URL}/meeting/default`).then((result) =>

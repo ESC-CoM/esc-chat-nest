@@ -20,9 +20,11 @@ import { RoomController } from './room.controller';
 import { NextFunction } from 'express';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '../jwt/jwt.guard';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule,
     UserModule,
     ChatModule,
     MongooseModule.forFeature([

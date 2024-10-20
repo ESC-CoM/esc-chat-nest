@@ -84,25 +84,30 @@ export class RoomController {
   @UseGuards(JwtAuthGuard)
   public async searchChats(
     @Param('id') roomId: string,
-    @Query() { page, size }: { page: string; size: string },
+    @Query() { page: _page, size: _size }: { page: string; size: string },
   ) {
+    const [page, size] = [Number(_page), Number(_size)];
+
     const chats = await this.service.searchChat(roomId, {
-      page: Number(page),
-      size: Number(size),
+      page,
+      size,
     });
-    const prevPage = Number(page) - 1 < 0 ? 0 : Number(page) - 1;
-    const hasPrevious = !!(await this.service.searchChat(roomId, {
-      page: prevPage,
-      size: 1,
-    }));
-    const hasNext = !!(await this.service.searchChat(roomId, {
-      page: Number(page) + 1,
-      size: 1,
-    }));
+    const prevPage = page - 1;
+    const hasPrevious =
+      prevPage === -1
+        ? false
+        : !!(await this.service.searchChat(roomId, {
+            page: prevPage,
+            size,
+          }));
+    const next = await this.service.searchChat(roomId, {
+      page: page + 1,
+      size,
+    });
     return new BaseResponse({
       content: chats.map((chat) => new ChatDto(chat)),
       currentPageNumber: page,
-      hasNext,
+      hasNext: !!next.length,
       hasPrevious,
       pageSize: size,
     });

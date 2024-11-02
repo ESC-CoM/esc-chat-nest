@@ -12,7 +12,7 @@ export class UserService {
   public async addRoom(room: ChatRoom, userIds: string[]) {
     const promises = [];
     userIds.forEach((id) =>
-      promises.push(this.repository.upsert({ id }, { rooms: [], id: id })),
+      promises.push(this.repository.upsert({ id }, { id: id })),
     );
     const results: User[] = await Promise.all(promises);
     await this.repository.updateAll(
